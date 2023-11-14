@@ -12,6 +12,7 @@
     "start": "nodemon ./src/server.js",
     "seed": "node ./scripts/seedDb.js",
     "test": "npm run seed && jest",
+    "coverage": "npm run seed && jest --collectCoverage --",
     "lint": "./node_modules/.bin/eslint . --ext .js"
   },
   "devDependencies": {

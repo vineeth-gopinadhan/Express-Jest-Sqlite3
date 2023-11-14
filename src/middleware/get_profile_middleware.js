@@ -5,7 +5,7 @@ const getProfile = async (req, res, next) => {
   try {
     const profile = await Profile.findOne({
       where: {
-        id: req.get('profile_id') || 1
+        id: req.get('profile_id')
       }
     });
 
