@@ -1,5 +1,9 @@
 'use strict';
-const { getContractorByIdController } = require('./../controller');
+
+const {
+  getContractByIdController,
+  getContracts
+} = require('./../controller');
 const { getProfile } = require('./../middleware');
 const express = require('express');
 const router = express.Router({
@@ -9,7 +13,14 @@ const router = express.Router({
 router.get(
     '/contracts/:id',
     getProfile,
-    getContractorByIdController
+    getContractByIdController
 );
+
+router.get(
+    '/contracts',
+    getProfile,
+    getContracts
+);
+
 
 module.exports = router;

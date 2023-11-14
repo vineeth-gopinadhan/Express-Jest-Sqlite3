@@ -1,5 +1,5 @@
 
-const { getContractById } = require('./../service');
+const { getContractById } = require('../service');
 module.exports = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -11,6 +11,7 @@ module.exports = async (req, res, next) => {
       result: { contract }
     });
   } catch (err) {
-    console.error('GET Contractor By ID, Error: ', err);
+    console.error('GET Contract By ID, Error: ', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
