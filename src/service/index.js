@@ -1,6 +1,7 @@
 `use strict`;
 
 const { Contract, Profile, Job } = require('./../model');
+const { Sequelize } = require('sequelize');
 
 async function getContractById({ id, profileId, profileType }) {
   try {
@@ -23,11 +24,41 @@ async function getContractById({ id, profileId, profileType }) {
 
     return contract;
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    throw error;
+  }
+}
+
+async function getContracts({ profileId, profileType }) {
+  try {
+    console.log('GET Contracts, Args: ',
+        { profileId, profileType });
+    const profileKey = profileType === 'contractor' ?
+    'ContractorId' : 'ClientId';
+    const filter = {
+      [Sequelize.Op.or]: [
+        {
+          [profileKey]: profileId,
+          status: {
+            [Sequelize.Op.not]: 'terminated'
+          }
+        }
+      ]
+    };
+    const contracts = await Contract.findAll({
+      where: filter,
+      include: [
+        {
+          model: Job
+        }
+      ]
+    });
+    return contracts;
+  } catch (error) {
     throw error;
   }
 }
 
 module.exports = {
-  getContractById
+  getContractById,
+  getContracts
 };
