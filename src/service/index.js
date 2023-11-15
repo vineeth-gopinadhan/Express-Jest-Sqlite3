@@ -145,7 +145,7 @@ async function postJobPayment({
       { profileId, profileType, balance, jobId });
   try {
     if (profileType != 'client') {
-      return 401;
+      return 403;
     }
     // Find the job with the specified ID
     const job = await Job.findByPk(jobId, {
@@ -206,9 +206,87 @@ async function postJobPayment({
   }
 }
 
+async function postDeposit({
+  profileId,
+  profileType,
+  balance,
+  userId,
+  depositAmount
+}) {
+  console.log('POST Deposit, Args: ',
+      {
+        profileId,
+        profileType,
+        balance,
+        userId,
+        depositAmount
+      });
+
+  try {
+    // Check if profile belongs to client
+    if (profileType != 'client') {
+      return 403;
+    }
+    // Check if the authenticated user is the same as the
+    // user specified in the request
+    if (profileId !== parseInt(userId)) {
+      return 403;
+    }
+
+    // Check if deposit amount is a number
+    if (!depositAmount || typeof depositAmount != 'number') {
+      return 400;
+    }
+
+    // Find all active contracts for the client
+    const contracts = await Contract.findAll({
+      where: {
+        ClientId: profileId,
+        status: 'in_progress'
+      },
+      include: [
+        {
+          model: Job
+        }
+      ]
+    });
+
+    // Calculate the total amount of jobs to pay for the client
+    const totalJobsToPay = contracts.reduce((total, contract) => {
+      const unpaidJobs = contract.Jobs.filter((job) => !job.paid);
+      return total + unpaidJobs.reduce(
+          (jobTotal, job) => jobTotal + job.price, 0
+      );
+    }, 0);
+
+    // Calculate the maximum deposit amount (25% of total jobs to pay)
+    const maxDepositAmount = 0.25 * totalJobsToPay;
+    // Check if the deposit amount exceeds the maximum allowed
+    if (depositAmount > maxDepositAmount) {
+      return 400;
+    }
+
+    // Update the client's balance
+    const updatedBalance = balance + depositAmount;
+
+    await Profile.update({
+      balance: updatedBalance
+    }, {
+      where: {
+        id: profileId
+      }
+    });
+    return 200;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 module.exports = {
   getContractById,
   getContracts,
   getUnpaidJobs,
-  postJobPayment
+  postJobPayment,
+  postDeposit
 };
