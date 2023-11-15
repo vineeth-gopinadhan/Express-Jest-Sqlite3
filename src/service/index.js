@@ -2,6 +2,7 @@
 
 const { Contract, Profile, Job } = require('./../model');
 const { Sequelize } = require('sequelize');
+const { sequelize } = require('./../database');
 
 async function getContractById({ id, profileId, profileType }) {
   try {
@@ -134,8 +135,80 @@ async function getUnpaidJobs({ profileId, profileType }) {
   }
 }
 
+async function postJobPayment({
+  profileId,
+  profileType,
+  balance,
+  jobId
+}) {
+  console.log('POST Job Pay, Args: ',
+      { profileId, profileType, balance, jobId });
+  try {
+    if (profileType != 'client') {
+      return 401;
+    }
+    // Find the job with the specified ID
+    const job = await Job.findByPk(jobId, {
+      include: [
+        {
+          model: Contract,
+          include: [
+            {
+              model: Profile,
+              as: 'Client',
+              where: { id: profileId, type: 'client' }
+            },
+            {
+              model: Profile,
+              as: 'Contractor'
+            }
+          ]
+        }
+      ]
+    });
+
+    if (!job) {
+      return 404;
+    }
+
+    // Check if the client has enough balance to pay for the job
+    if (balance < job.price || job.paid) {
+      return 400;
+    }
+
+    // Update the client's balance and contractor's balance
+    const updatedClientBalance = balance - job.price;
+    const updatedContractorBalance =
+    job.Contract.Contractor.balance + job.price;
+
+    // Transaction to ensure atomicity
+    await sequelize.transaction(async (t) => {
+      await Profile.update(
+          { balance: updatedClientBalance },
+          { where: { id: profileId }, transaction: t }
+      );
+
+      await Profile.update(
+          { balance: updatedContractorBalance },
+          { where: { id: job.Contract.Contractor.id }, transaction: t }
+      );
+
+      // Mark the job as paid
+      await Job.update(
+          { paid: true, paymentDate: new Date() },
+          { where: { id: jobId }, transaction: t }
+      );
+    });
+
+    return 200;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getContractById,
   getContracts,
-  getUnpaidJobs
+  getUnpaidJobs,
+  postJobPayment
 };

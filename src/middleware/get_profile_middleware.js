@@ -14,7 +14,10 @@ const getProfile = async (req, res, next) => {
     next();
   } catch (err) {
     console.error(err);
-    res.status(401).json({ error: 'Invalid user' });
+    res.status(401).json({
+      status: 'nok',
+      message: 'Invalid user'
+    });
   }
 };
 

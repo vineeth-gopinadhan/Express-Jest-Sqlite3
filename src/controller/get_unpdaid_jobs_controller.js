@@ -13,6 +13,9 @@ module.exports = async (req, res, next) => {
     });
   } catch (err) {
     console.error('GET Unpaid Jobs, Error: ', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).send({
+      status: 'nok',
+      message: 'Internal Server Error'
+    });
   }
 };
