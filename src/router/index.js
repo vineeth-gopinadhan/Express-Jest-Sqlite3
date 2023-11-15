@@ -3,7 +3,8 @@
 const {
   getContractByIdController,
   getContracts,
-  getUnpaidJobsController
+  getUnpaidJobsController,
+  postJobPaymentController
 } = require('./../controller');
 const { getProfile } = require('./../middleware');
 const express = require('express');
@@ -27,6 +28,12 @@ router.get(
     '/jobs/unpaid',
     getProfile,
     getUnpaidJobsController
+);
+
+router.post(
+    '/jobs/:job_id/pay',
+    getProfile,
+    postJobPaymentController
 );
 
 
