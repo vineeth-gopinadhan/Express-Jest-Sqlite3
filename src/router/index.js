@@ -5,7 +5,8 @@ const {
   getContracts,
   getUnpaidJobsController,
   postJobPaymentController,
-  postDepositController
+  postDepositController,
+  getAdminBestProfessionController
 } = require('./../controller');
 const { getProfile } = require('./../middleware');
 const express = require('express');
@@ -29,6 +30,12 @@ router.get(
     '/jobs/unpaid',
     getProfile,
     getUnpaidJobsController
+);
+
+router.get(
+    '/admin/best-profession',
+    getProfile,
+    getAdminBestProfessionController
 );
 
 router.post(
