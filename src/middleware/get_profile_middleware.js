@@ -14,7 +14,7 @@ const getProfile = async (req, res, next) => {
     next();
   } catch (err) {
     console.error(err);
-    res.status(401).json({
+    res.status(401).send({
       status: 'nok',
       message: 'Invalid user'
     });
