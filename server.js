@@ -1,8 +1,7 @@
-/* eslint-disable require-jsdoc */
-const { testConnection, sequelize } = require('./database');
-const app = require('./app');
+'use strict';
 
-init();
+const { testConnection, sequelize } = require('./src/database');
+const app = require('./app');
 
 async function init() {
   try {
@@ -16,3 +15,6 @@ async function init() {
     process.exit(1);
   }
 }
+
+init();
+

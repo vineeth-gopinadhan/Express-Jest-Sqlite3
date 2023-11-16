@@ -1,5 +1,7 @@
+'use strict';
+
 const request = require('supertest');
-const app = require('../../src/app');
+const app = require('../../../app');
 
 describe('GET /contracts/:id', () => {
   it('returns 404 on no contract', async () => {

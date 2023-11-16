@@ -1,5 +1,6 @@
+'use strict';
 
-const { postJobPayment } = require('../service');
+const { postDeposit } = require('../../service');
 
 module.exports = async (req, res, next) => {
   try {
@@ -8,23 +9,22 @@ module.exports = async (req, res, next) => {
       type: profileType,
       balance
     } = req.profile;
-    const { job_id: jobId } = req.params;
-    const statusCode = await postJobPayment({
+    const { deposit_amount: depositAmount } = req.body;
+    const { userId } = req.params;
+    const statusCode = await postDeposit({
       profileId,
       profileType,
       balance,
-      jobId
+      userId,
+      depositAmount
     });
-
+    console.log(
+        'POST Deposit, completed with status code ', statusCode);
     switch (statusCode) {
-      case 404:
-        res.status(404).send({
-          message: 'Job not found' });
-        break;
       case 400:
         res.status(400).send({
           status: 'nok',
-          message: 'Insufficient balance or job already paid'
+          message: 'Invalid Deposit Amount'
         });
         break;
       case 403:
@@ -36,7 +36,7 @@ module.exports = async (req, res, next) => {
       case 200:
         res.status(200).send({
           status: 'ok',
-          message: 'Payment successful'
+          message: 'Deposit successful'
         });
         break;
       default:
@@ -46,7 +46,7 @@ module.exports = async (req, res, next) => {
         });
     }
   } catch (err) {
-    console.error('GET Unpaid Jobs, Error: ', err);
+    console.error('POST Deposit, Error: ', err);
     res.status(500).send({
       status: 'nok',
       message: 'Internal Server Error'

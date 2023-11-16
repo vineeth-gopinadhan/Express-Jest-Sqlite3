@@ -1,5 +1,7 @@
+'use strict';
+
 const request = require('supertest');
-const app = require('../../src/app');
+const app = require('../../../app');
 
 describe('GET /admin/best-profession', () => {
   it('returns 404 on no Job data found', async () => {

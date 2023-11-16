@@ -1,5 +1,7 @@
+'use strict';
 
-const { getAdminBestProfession } = require('../service');
+const { getAdminBestProfession } = require('../../service');
+
 module.exports = async (req, res, next) => {
   try {
     const { start, end } = req.query;
@@ -11,7 +13,8 @@ module.exports = async (req, res, next) => {
       start,
       end
     });
-
+    console.log(
+        'GET Admin Best Profession, completed with status code ', statusCode);
     switch (statusCode) {
       case 404:
         res.status(404).send({
