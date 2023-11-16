@@ -1,5 +1,7 @@
+'use strict';
+
 const request = require('supertest');
-const app = require('./../../src/app');
+const app = require('../../../app');
 
 describe('POST /balances/deposit/:userId', () => {
   it('returns 401 on invalid user', async () => {

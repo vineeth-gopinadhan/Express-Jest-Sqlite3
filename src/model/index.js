@@ -1,4 +1,5 @@
-/* eslint-disable new-cap */
+'use strict';
+
 const { sequelize } = require('./../database');
 const Sequelize = require('sequelize');
 

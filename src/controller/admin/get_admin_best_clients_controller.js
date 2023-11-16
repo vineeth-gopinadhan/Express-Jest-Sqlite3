@@ -1,6 +1,7 @@
 'use strict';
 
-const { getAdminBesClients } = require('../service');
+const { getAdminBesClients } = require('../../service');
+
 module.exports = async (req, res, next) => {
   try {
     const { start, end, limit } = req.query;
@@ -12,7 +13,8 @@ module.exports = async (req, res, next) => {
       end,
       limit
     });
-
+    console.log(
+        'GET Admin Best Clients, completed with status code ', statusCode);
     switch (statusCode) {
       case 404:
         res.status(404).send({

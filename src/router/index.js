@@ -34,18 +34,6 @@ router.get(
     getUnpaidJobsController
 );
 
-router.get(
-    '/admin/best-profession',
-    getProfile,
-    getAdminBestProfessionController
-);
-
-router.get(
-    '/admin/best-clients',
-    getProfile,
-    getAdminBestClientsController
-);
-
 router.post(
     '/jobs/:job_id/pay',
     getProfile,
@@ -58,5 +46,17 @@ router.post(
     postDepositController
 );
 
+// Admin routes
+router.get(
+    '/admin/best-profession',
+    getProfile,
+    getAdminBestProfessionController
+);
+
+router.get(
+    '/admin/best-clients',
+    getProfile,
+    getAdminBestClientsController
+);
 
 module.exports = router;
