@@ -9,7 +9,7 @@
     "sqlite3": "^5.0.0"
   },
   "scripts": {
-    "start": "nodemon ./src/server.js",
+    "start": "nodemon ./server.js",
     "seed": "node ./scripts/seedDb.js",
     "test": "npm run seed && jest",
     "coverage": "npm run seed && jest --collectCoverage --",
