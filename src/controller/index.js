@@ -6,5 +6,6 @@ module.exports = {
   postJobPaymentController: require('./post_job_payment_controller'),
   postDepositController: require('./post_deposit_controller'),
   getAdminBestProfessionController:
-    require('./get_admin_best_profession_controller')
+    require('./get_admin_best_profession_controller'),
+  getAdminBestClientsController: require('./get_admin_best_clients_controller')
 };
